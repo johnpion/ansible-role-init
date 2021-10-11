@@ -1,0 +1,23 @@
+- lineinfile:
+    path: /etc/network/interfaces
+    line: "source /etc/network/interfaces.d/*"
+
+- local_action: stat path=files/{{ inventory_hostname }}/network
+  register: network_config_files
+
+- name: update_network_interfaces
+  synchronize:
+    src: files/{{ inventory_hostname }}/network
+    dest: /etc/
+    recursive: yes
+  register: network_synchronized
+  when: network_config_files.stat.exists
+
+- name: chown network
+  file:
+    path: /etc/network
+    owner: root
+    group: root
+    mode: u=xrw,g=rx,o=rx
+    recurse: yes
+  when: network_synchronized.changed

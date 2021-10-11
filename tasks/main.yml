@@ -1,0 +1,88 @@
+- name: change default network name
+  include: change_default_network_name.yml
+  when: ansible_default_ipv4.interface != 'eth0'
+
+- name: set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+  when: ansible_virtualization_type != "lxc"
+
+- name: set bashrc
+  lineinfile:
+    path: /root/.bashrc
+    line: 'export PS1="\[\e]0;\u@\H: \w\a\]${debian_chroot:+($debian_chroot)}\[\e[1;31m\]\u\[\e[1;33m\]@\[\e[1;36m\]\H \[\e[1;33m\]\w \[\e[1;35m\]\$ \[\e[0m\]"'
+
+- name: sources.list
+  template:
+    src: sources.list.j2
+    dest: /etc/apt/sources.list
+    backup: yes
+    mode: 0644
+  when: apt_source
+
+- name: delete pve-enterprise repo from apt
+  file:
+    path: /etc/apt/sources.list.d/pve-enterprise.list
+    state: absent
+  when: '"proxmox" in group_names'
+
+- name: delete pbs-enterprise repo from apt
+  file:
+    path: /etc/apt/sources.list.d/pbs-enterprise.list
+    state: absent
+  when: '"pbs" in group_names'
+
+# после смены выхода новой стабильной версии apt update требует нажать yes
+- name: fix apt-get
+  command: apt-get update --allow-releaseinfo-change
+
+- name: upgrade system
+  apt:
+    update_cache: True
+    upgrade: full
+    autoclean: True
+    autoremove: True
+    force: True
+  tags: init_apt
+
+- name: install software
+  apt:
+    pkg:
+      - rsync
+      - sudo
+    autoclean: True
+  tags: init_apt
+
+- name: locale gen
+  locale_gen:
+    name: "{{ item }}"
+  with_items:
+    - en_US.UTF-8
+    - ru_RU.UTF-8
+
+- name: set locale
+  lineinfile:
+    path: /etc/default/locale
+    line: '{{ item }}="en_US.UTF-8"'
+    regexp: "{{ item }}.*"
+  with_items:
+    - LANG
+    - LC_ALL
+
+- name: ssh config
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+  tags: init_ssh
+  register: ssh_synchronized
+
+- name: ssh restart
+  service:
+    name: ssh
+    state: restarted
+  when: ssh_synchronized.changed
+
+- include: network.yml
+  tags: network
+
+- include: user.yml

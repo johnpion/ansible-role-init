@@ -1,0 +1,4 @@
+apt_repo: buster
+apt_source: true
+ssh_port: 22
+proxmox_enterprise: false
