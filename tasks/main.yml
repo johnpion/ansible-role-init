@@ -61,7 +61,7 @@
     name: rpcbind
     state: stopped
     enabled: false
-  when: "'rpcbind' in ansible_facts.services.name"
+  when: "'rpcbind' in ansible_facts.services"
 
 - name: locale gen
   locale_gen:
