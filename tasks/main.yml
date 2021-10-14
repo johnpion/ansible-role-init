@@ -50,8 +50,14 @@
     pkg:
       - rsync
       - sudo
-    autoclean: True
+    autoclean: true
   tags: init_apt
+
+- name: disable rpcbind
+  systemd:
+    name: rpcbind
+    state: stopped
+    enabled: false
 
 - name: locale gen
   locale_gen:
