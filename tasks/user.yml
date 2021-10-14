@@ -1,16 +1,30 @@
+- name: set sudo
+  lineinfile:
+    path: /etc/sudoers
+    line: "%sudo ALL=(ALL) NOPASSWD: ALL"
+
+### issue-003
+# - name: create user 'ansible'
+#   user:
+#     user: ansible
+#     groups: sudo
+#     shell: /bin/bash
+#
+# - name: add ssh key for user 'ansible'
+#   authorized_key:
+#     user: ansible
+#     key: "{{ item }}"
+#     groups: sudo
+#     shell: /bin/bash
+#   loop: "{{ ssh_keys }}"
+
 - name: create users
   user:
     name: "{{ user.name }}"
     groups: "{{ user.groups }}"
   when: user is defined
 
-- name: set sudo
-  lineinfile:
-    path: /etc/sudoers
-    line: "%sudo ALL=(ALL) NOPASSWD: ALL"
-
 - name: passwd root
-  # shell: echo {{ passwd }} | echo {{ passwd }} | passwd
   user:
     user: root
     password: "{{ passwd|password_hash('sha512') }}"
