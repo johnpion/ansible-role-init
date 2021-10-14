@@ -53,11 +53,15 @@
     autoclean: true
   tags: init_apt
 
+- name: Gather the service facts
+  service_facts:
+
 - name: disable rpcbind
   systemd:
     name: rpcbind
     state: stopped
     enabled: false
+  when: "'rpcbind' in ansible_facts.services.name"
 
 - name: locale gen
   locale_gen:
