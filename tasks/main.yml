@@ -32,18 +32,33 @@
     state: absent
   when: '"pbs" in group_names'
 
-# после смены выхода новой стабильной версии apt update требует нажать yes
+- name: upgrade system
+  apt:
+    autoclean: True
+    autoremove: True
+    force: true
+    update_cache: true
+    upgrade: full
+  tags: init_apt
+  register: apt
+  ignore_errors: true
+
+### после смены выхода новой стабильной версии apt update требует нажать yes
 - name: fix apt-get
   command: apt-get update --allow-releaseinfo-change
+  when: apt.failed
+  register: fix_apt
+  tags: init_apt
 
 - name: upgrade system
   apt:
-    update_cache: True
-    upgrade: full
     autoclean: True
     autoremove: True
-    force: True
+    force: true
+    update_cache: true
+    upgrade: full
   tags: init_apt
+  when: fix_apt is changed
 
 - name: install software
   apt:
