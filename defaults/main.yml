@@ -2,3 +2,7 @@ apt_repo: buster
 apt_source: true
 ssh_port: 22
 proxmox_enterprise: false
+default_locale: en_US.UTF-8
+locales:
+  - en_US.UTF-8
+  - ru_RU.UTF-8

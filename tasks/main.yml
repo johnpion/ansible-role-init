@@ -82,17 +82,20 @@
   locale_gen:
     name: "{{ item }}"
   with_items:
-    - en_US.UTF-8
-    - ru_RU.UTF-8
-
+    - "{{ locales }}"
+    
 - name: set locale
   lineinfile:
     path: /etc/default/locale
-    line: '{{ item }}="en_US.UTF-8"'
+    line: '{{ item }}="{{ default_locale }}"'
     regexp: "{{ item }}.*"
   with_items:
     - LANG
     - LC_ALL
+
+- name: set timezone
+  timezone:
+    name: "{{ timezone }}"
 
 - name: ssh config
   template:
