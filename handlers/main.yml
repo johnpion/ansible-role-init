@@ -1,0 +1,5 @@
+- name: restart logrotate
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: logrotate
