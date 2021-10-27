@@ -1,6 +1,20 @@
+- name: add to grub
+  lineinfile:
+    dest: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX='
+    line: 'GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"'
+  become: true
+  notify: reconfigure grub
+  when:
+    - ansible_default_ipv4.interface != 'eth0'
+    - ansible_default_ipv4.interface is not search ("vmbr")
+
 - name: change default network name
-  include: change_default_network_name.yml
-  when: ansible_default_ipv4.interface != 'eth0'
+  command: sed -i 's/{{ ansible_default_ipv4.interface }}/eth0/g' /etc/network/interfaces
+  become: true
+  when:
+    - ansible_default_ipv4.interface != 'eth0'
+    - ansible_default_ipv4.interface is not search ("vmbr")
 
 - name: set hostname
   hostname:
@@ -96,9 +110,8 @@
 - name: set timezone
   timezone:
     name: "{{ timezone }}"
-  notity:
-    - restart cron
-    
+  notify: restart cron
+
 - name: logrotate
   copy:
     src: logrotate.service
@@ -117,15 +130,13 @@
   template:
     src: sshd_config.j2
     dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0644
   tags: init_ssh
   register: ssh_synchronized
-
-- name: ssh restart
-  service:
-    name: ssh
-    state: restarted
-  when: ssh_synchronized.changed
-
+  notify: restart ssh
+  
 - include: network.yml
   tags: network
 
