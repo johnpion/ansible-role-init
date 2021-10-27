@@ -3,3 +3,8 @@
     state: restarted
     daemon_reload: yes
     name: logrotate
+
+- name: restart cron
+  ansible.builtin.systemd:
+    state: restarted
+    name: cron

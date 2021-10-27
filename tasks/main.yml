@@ -96,7 +96,9 @@
 - name: set timezone
   timezone:
     name: "{{ timezone }}"
-
+  notity:
+    - restart cron
+    
 - name: logrotate
   copy:
     src: logrotate.service
