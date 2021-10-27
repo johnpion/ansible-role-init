@@ -9,7 +9,7 @@
     name: cron
     state: restarted
 
-- name: ssh restart
+- name: restart ssh
   service:
     name: ssh
     state: restarted

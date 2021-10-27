@@ -107,7 +107,7 @@
     - LANG
     - LC_ALL
 
-- name: set timezone
+- name: "set timezone {{ timezone }}"
   timezone:
     name: "{{ timezone }}"
   notify: restart cron
@@ -136,7 +136,7 @@
   tags: init_ssh
   register: ssh_synchronized
   notify: restart ssh
-  
+
 - include: network.yml
   tags: network
 
