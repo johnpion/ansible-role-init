@@ -29,5 +29,5 @@
     user: root
     password: "{{ passwd|password_hash('sha512') }}"
   when: passwd is defined
-  no_log: "not {{ debug }}"
+  no_log: "{{ not (init_debug|bool) }}"
   tags: init_passwd

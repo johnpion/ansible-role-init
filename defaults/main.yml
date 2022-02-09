@@ -10,4 +10,4 @@ timezone: Etc/UTC
 journald_runtime_max_use: 100M
 journald_runtime_max_files: 8
 journald_runtime_max_file_size: 1024M
-debug: false
+init_debug: false
