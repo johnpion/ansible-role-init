@@ -79,6 +79,7 @@
     pkg:
       - rsync
       - sudo
+      - tmux
     autoclean: true
   tags: init_apt
 
