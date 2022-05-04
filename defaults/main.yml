@@ -1,3 +1,4 @@
+apt_mirror: http://deb.debian.org/debian
 apt_repo: buster
 apt_source: true
 ssh_port: 22
