@@ -1,11 +1,11 @@
 - name: add addition interfaces
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/network/interfaces
     line: "source /etc/network/interfaces.d/*"
 
 - name: check local configs
   delegate_to: localhost
-  stat:
+  ansible.builtin.stat:
     path: files/{{ inventory_hostname }}/network
   register: network_config_files
 
@@ -13,6 +13,6 @@
   synchronize:
     src: files/{{ inventory_hostname }}/network
     dest: /etc/
-    recursive: yes
+    recursive: true
   when: network_config_files.stat.exists
   notify: chown network
