@@ -82,6 +82,7 @@
       - rsync
       - sudo
       - tmux
+      - xz-utils
     autoclean: true
   tags: init_apt
 
