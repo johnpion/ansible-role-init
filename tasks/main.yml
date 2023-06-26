@@ -1,54 +1,54 @@
-# change new auto naming of ehternet devices to old behavior
-- name: add to grub
+- name: Add to grub. Change new auto naming of ehternet devices to old behavior
   ansible.builtin.lineinfile:
     dest: /etc/default/grub
     regexp: '^GRUB_CMDLINE_LINUX='
     line: 'GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"'
   become: true
-  notify: reconfigure grub
+  notify: Reconfigure grub
   when:
     - ansible_default_ipv4.interface != 'eth0'
     - ansible_default_ipv4.interface is not search ("vmbr")
+  register: grub_update
 
-- name: change default network name
+- name: Change default network name
   ansible.builtin.command: sed -i 's/{{ ansible_default_ipv4.interface }}/eth0/g' /etc/network/interfaces
   become: true
+  warn: false  # E301
   when:
     - ansible_default_ipv4.interface != 'eth0'
     - ansible_default_ipv4.interface is not search ("vmbr")
 
-# set hostname for non-proxmox nodes
-- name: set hostname
+- name: Set hostname for non-proxmox nodes
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
   when: ansible_virtualization_type != "lxc"
 
-- name: set bashrc
+- name: Set bashrc
   ansible.builtin.lineinfile:
     path: /root/.bashrc
     line: 'export PS1="\[\e]0;\u@\H: \w\a\]${debian_chroot:+($debian_chroot)}\[\e[1;31m\]\u\[\e[1;33m\]@\[\e[1;36m\]\H \[\e[1;33m\]\w \[\e[1;35m\]\$ \[\e[0m\]"'
 
-- name: sources.list
+- name: Update sources.list
   ansible.builtin.template:
     src: sources.list.j2
     dest: /etc/apt/sources.list
     backup: true
-    mode: 0644
+    mode: "0644"
   when: apt_source
 
-- name: delete pve-enterprise repo from apt
+- name: Delete pve-enterprise repo from apt
   ansible.builtin.file:
     path: /etc/apt/sources.list.d/pve-enterprise.list
     state: absent
   when: '"proxmox" in group_names'
 
-- name: delete pbs-enterprise repo from apt
+- name: Delete pbs-enterprise repo from apt
   ansible.builtin.file:
     path: /etc/apt/sources.list.d/pbs-enterprise.list
     state: absent
   when: '"pbs" in group_names'
 
-- name: upgrade system
+- name: Upgrade system
   ansible.builtin.apt:
     autoclean: true
     autoremove: true
@@ -60,13 +60,14 @@
   ignore_errors: true
 
 ### When new stable release of Debian is anonsed, apt update ask to press "yes"
-- name: fix apt-get
+- name: Fix apt-get
   ansible.builtin.command: apt-get update --allow-releaseinfo-change
+  warn: false  # E301
   when: apt.failed
   register: fix_apt
   tags: init_apt
 
-- name: upgrade system
+- name: Upgrade system
   ansible.builtin.apt:
     autoclean: true
     autoremove: true
@@ -74,9 +75,10 @@
     update_cache: true
     upgrade: full
   tags: init_apt
+  warn: false
   when: fix_apt is changed
 
-- name: install software
+- name: Install software
   ansible.builtin.apt:
     pkg:
       - rsync
@@ -89,20 +91,20 @@
 - name: Gather the service facts
   ansible.builtin.service_facts:
 
-- name: disable rpcbind
+- name: Disable rpcbind
   ansible.builtin.systemd:
     name: rpcbind
     state: stopped
     enabled: false
   when: "'rpcbind' in ansible_facts.services"
 
-- name: locale gen
-  ansible.builtin.locale_gen:
+- name: Locale gen
+  community.general.locale_gen:
     name: "{{ item }}"
   with_items:
     - "{{ locales }}"
 
-- name: set locale
+- name: Set locale
   ansible.builtin.lineinfile:
     path: /etc/default/locale
     line: '{{ item }}="{{ default_locale }}"'
@@ -111,51 +113,51 @@
     - LANG
     - LC_ALL
 
-- name: journald
+- name: Journald
   ansible.builtin.template:
     src: journald.j2
     dest: /etc/systemd/journald.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when:
     - ansible_distribution == "Debian"
     - ansible_distribution_release == "buster"
     - ansible_virtualization_type == "lxc"
-  notify:
-    - restart journald
+  notify: Restart journald
 
-- name: "set timezone {{ timezone }}"
-  timezone:
+- name: "Set timezone {{ timezone }}"
+  community.general.timezone:
     name: "{{ timezone }}"
-  notify: restart cron
+  notify: Restart cron
 
-- name: logrotate
+- name: Logrotate
   ansible.builtin.copy:
     src: logrotate.service
     dest: /lib/systemd/system
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when:
     - ansible_distribution == "Debian"
     - ansible_distribution_release == "buster"
     - ansible_virtualization_type == "lxc"
-  notify:
-    - restart logrotate
+  notify: Restart logrotate
 
-- name: ssh config
+- name: Config ssh
   ansible.builtin.template:
     src: sshd_config.j2
     dest: /etc/ssh/sshd_config
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   tags: init_ssh
   register: ssh_synchronized
-  notify: restart ssh
+  notify: Restart ssh
 
-- include: network.yml
+- name: Config network
+  ansible.builtin.import_tasks: network.yml
   tags: network
 
-- include: user.yml
+- name: Config users
+  ansible.builtin.import_tasks: user.yml

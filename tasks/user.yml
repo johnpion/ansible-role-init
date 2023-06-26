@@ -1,18 +1,18 @@
-- name: set sudo
+- name: Set sudo
   ansible.builtin.lineinfile:
     path: /etc/sudoers
     line: "%sudo ALL=(ALL) NOPASSWD: ALL"
 
-- name: create users
+- name: Create users
   ansible.builtin.user:
     name: "{{ user.name }}"
     groups: "{{ user.groups }}"
   when: user is defined
 
-- name: passwd root
+- name: Passwd root
   ansible.builtin.user:
     user: root
     password: "{{ passwd | password_hash('sha512') }}"
   when: passwd is defined
-  no_log: "{{ not ( init_debug | bool ) }}"
+  no_log: "{{ not (init_debug | bool) }}"
   tags: init_passwd
