@@ -1,7 +1,7 @@
 galaxy_info:
   author: Ivan Serohin
   license: license Apache-2.0
-  role_name: dont_forget_change_me
+  role_name: init
   namespace: johnpion
   description: the first one role for new servers
   min_ansible_version: '2.14'
