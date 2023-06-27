@@ -10,11 +10,11 @@ push_to_github:
   stage: push_to_github
   script:
     # - ls
-    - rm -f '.gitlab-ci.yml'
-    - rm -rf local
-    - git add .
-    - git commit -a -m "Automatic commit from GitLab"
     - git remote add github git@github.com:johnpion/ansible-role-$ROLE.git
+    - git rm .gitlab-ci.yml
+    - git rm local
+    - git add .
+    - git commit -m "Automatic commit from GitLab"
     - git push github main
   only:
     - main
