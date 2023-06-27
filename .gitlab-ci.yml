@@ -9,7 +9,7 @@ stages:
 push_to_github:
   stage: push_to_github
   script:
-    - mkdir ~/tmp/$ROLE
+    - mkdir -p ~/tmp/$ROLE
     - rsync --exclude .gitlab-ci.yml --exclude local . ~/tmp/$ROLE
     - cd ~/tmp/$ROLE
     - git remote add github git@github.com:johnpion/ansible-role-$ROLE.git
@@ -20,7 +20,7 @@ push_to_github:
     - git commit -m "Automatic commit from GitLab"
     - git push github main
     - cd ~/tmp
-    - rm -rf ~/tmp/$ROLE
+    # - rm -rf ~/tmp/$ROLE
   only:
     - main
 
