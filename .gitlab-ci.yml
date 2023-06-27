@@ -11,6 +11,7 @@ push_to_github:
   script:
     # - ls
     - git remote add github git@github.com:johnpion/ansible-role-$ROLE.git
+    - git pull github main
     - git rm .gitlab-ci.yml
     - git rm -r local
     - git add .
