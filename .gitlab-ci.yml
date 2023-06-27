@@ -12,12 +12,11 @@ push_to_github:
     - git clone --branch main git@github.com:johnpion/ansible-role-$ROLE.git github_repo
     - rsync -ar --exclude .gitlab-ci.yml --exclude local ./ github_repo/
     - cd github_repo
+    - git remote set-url origin git@github.com:johnpion/ansible-role-$ROLE.git
     - git add .
     - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
     - git commit -m "$COMMIT_MESSAGE"
-    - git push github main
-    # - cd ~/tmp
-    # - rm -rf ~/tmp/$ROL E
+    - git push origin main
   only:
     - main
 
