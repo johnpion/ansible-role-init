@@ -21,7 +21,7 @@ push_to_github:
     - git commit -m "Automatic commit from GitLab"
     - git push github HEAD:main
     - cd ~/tmp
-    # - rm -rf ~/tmp/$ROL E
+    - rm -rf ~/tmp/$ROL E
   only:
     - main
 
