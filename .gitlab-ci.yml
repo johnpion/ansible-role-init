@@ -1,6 +1,6 @@
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
-  ROLE: init
+  # ROLE: init
 
 stages:
   - push_to_github
@@ -9,6 +9,7 @@ stages:
 push_to_github:
   stage: push_to_github
   script:
+    - ROLE=$(grep role_name meta/main.yml | awk '{print $2}')
     - git clone --branch main git@github.com:johnpion/ansible-role-$ROLE.git github_repo
     - rsync -ar --exclude .gitlab-ci.yml --exclude local ./ github_repo/
     - cd github_repo
