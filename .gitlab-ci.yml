@@ -15,7 +15,7 @@ push_to_github:
     - git rm -r local
     - git add .
     - git commit -m "Automatic commit from GitLab"
-    - git push github main
+    - git push github HEAD:main
   only:
     - main
 
