@@ -4,6 +4,7 @@ variables:
 
 stages:
   - push_to_github
+  - import_to_ansible_galaxy
 
 push_to_github:
   stage: push_to_github
@@ -18,6 +19,12 @@ push_to_github:
     - git remote set-url origin git@github.com:johnpion/ansible-role-$ROLE.git
     - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
     - git push origin main
+  only:
+    - main
+
+import_to_ansible_galaxy:
+  stage: import_to_ansible_galaxy
+  script:
     - ansible-galaxy role import johnpion ansible-role-$ROLE
   only:
     - main
