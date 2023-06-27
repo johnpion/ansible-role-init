@@ -1,0 +1,20 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  ROLE: init
+
+stages:
+  - push_to_github
+
+push_to_github:
+  stage: push_to_github
+  script:
+    - git clone --branch main https://gitlab.adtes.nl/ansible/roles/$ROLE.git github_repo
+    - rsync -a --exclude='.gitlab-ci.yml' --exclude='local' ./ github_repo/
+    - cd github_repo
+    - git add .
+    - git commit -m "Automatic commit from GitLab"
+    - git remote set-url origin git@github.com:johnpion/ansible-role-$ROLE.git
+    - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+    - git push origin main
+  only:
+    - main

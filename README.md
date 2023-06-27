@@ -13,8 +13,3 @@ fatal: [SERVER]: FAILED! => {"msg": "crypt.crypt not supported on Mac OS X/Darwi
 
 # pip3 install passlib   
 ```
-
-## ansible-lint
-```
-cp pre-commit.sh .git/hooks/pre-commit
-```
