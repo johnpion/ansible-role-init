@@ -11,10 +11,13 @@ push_to_github:
     - git clone --branch main git@gitlab.adtes.nl:ansible/roles/$ROLE.git github_repo
     - rsync -a --exclude='.gitlab-ci.yml' --exclude='local' ./ github_repo/
     - cd github_repo
+    - rm -f '.gitlab-ci.yml'
+    - rm -rf local
     - git add .
     - git commit -m "Automatic commit from GitLab"
     - git remote set-url origin git@github.com:johnpion/ansible-role-$ROLE.git
     - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
     - git push origin main
+    - ansible-galaxy role import johnpion ansible-role-$ROLE
   only:
     - main
