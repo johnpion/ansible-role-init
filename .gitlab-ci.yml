@@ -12,7 +12,7 @@ push_to_github:
     # - ls
     - git remote add github git@github.com:johnpion/ansible-role-$ROLE.git
     - git rm .gitlab-ci.yml
-    - git rm local
+    - git rm -r local
     - git add .
     - git commit -m "Automatic commit from GitLab"
     - git push github main
