@@ -9,17 +9,13 @@ stages:
 push_to_github:
   stage: push_to_github
   script:
-    - git clone --branch main git@gitlab.adtes.nl:ansible/roles/$ROLE.git github_repo
-    - rsync -a --exclude='.gitlab-ci.yml' --exclude='local' ./ github_repo/
-    - cd github_repo
     - ls
-    - rm -f '.gitlab-ci.yml'
-    - rm -rf local
-    - git add .
-    - git commit -m "Automatic commit from GitLab"
-    - git remote set-url origin git@github.com:johnpion/ansible-role-$ROLE.git
-    - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-    - git push origin main
+    # - rm -f '.gitlab-ci.yml'
+    # - rm -rf local
+    # - git add .
+    # - git commit -a -m "Automatic commit from GitLab"
+    # - git remote add github git@github.com:johnpion/ansible-role-$ROLE.git
+    # - git push github main
   only:
     - main
 
