@@ -11,7 +11,7 @@ push_to_github:
   script:
     - mkdir -p ~/tmp/$ROLE
     - pwd
-    - rsync --exclude .gitlab-ci.yml --exclude local . ~/tmp/$ROLE
+    - rsync -r --exclude .gitlab-ci.yml --exclude local . ~/tmp/$ROLE
     - cd ~/tmp/$ROLE
     - git remote add github git@github.com:johnpion/ansible-role-$ROLE.git
     # - git pull github main
