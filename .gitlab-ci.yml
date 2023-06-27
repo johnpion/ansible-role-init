@@ -12,6 +12,7 @@ push_to_github:
     - git clone --branch main git@gitlab.adtes.nl:ansible/roles/$ROLE.git github_repo
     - rsync -a --exclude='.gitlab-ci.yml' --exclude='local' ./ github_repo/
     - cd github_repo
+    - ls
     - rm -f '.gitlab-ci.yml'
     - rm -rf local
     - git add .
