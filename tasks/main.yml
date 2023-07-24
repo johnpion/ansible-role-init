@@ -11,9 +11,12 @@
   register: grub_update
 
 - name: Change default network name
-  ansible.builtin.command: sed -i 's/{{ ansible_default_ipv4.interface }}/eth0/g' /etc/network/interfaces
+  ansible.builtin.replace:
+    backup: true
+    path: /etc/network/interfaces
+    regexp: "{{ ansible_default_ipv4 }}"
+    replace: "eth0"
   become: true
-  warn: false  # E301
   when:
     - ansible_default_ipv4.interface != 'eth0'
     - ansible_default_ipv4.interface is not search ("vmbr")
@@ -62,10 +65,9 @@
 ### When new stable release of Debian is anonsed, apt update ask to press "yes"
 - name: Fix apt-get
   ansible.builtin.command: apt-get update --allow-releaseinfo-change
-  warn: false  # E301
   when: apt.failed
   register: fix_apt
-  tags: init_apt
+  tags: skip_ansible_lint
 
 - name: Upgrade system
   ansible.builtin.apt:
@@ -74,8 +76,7 @@
     force: true
     update_cache: true
     upgrade: full
-  tags: init_apt
-  warn: false
+  tags: skip_ansible_lint
   when: fix_apt is changed
 
 - name: Install software

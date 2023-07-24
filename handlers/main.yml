@@ -22,15 +22,10 @@
   # when: ssh_synchronized.changed
 
 - name: Chown network
-  ansible.builtin.file:
-    path: /etc/network
-    owner: root
-    group: root
-    mode: "0755"
-    recurse: true
+  ansible.builtin.command: find /etc/network -type f -exec chmod -x {} \;
+  tags: skip_ansible_lint
 
 - name: Reconfigure grub
   ansible.builtin.command: update-grub
   become: true
-  warn: false # E301
-  when: grub_edit.changed
+  tags: skip_ansible_lint
