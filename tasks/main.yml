@@ -34,7 +34,7 @@
 
       if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ]; then
         if command -v tmux &>/dev/null; then
-          tmux attach || tmux new-session
+          tmux attach || tmux admin
         else
           echo "tmux is not installed."
         fi
