@@ -4,7 +4,7 @@ The role do 1st setting for new installation of Debian
 Can do dist-upgrade (:!: be careful :!:)
 
 ## system
-OS: Debian 10
+OS: Debian 7,8,9,10,11
 
 ## fixed issues
 ```

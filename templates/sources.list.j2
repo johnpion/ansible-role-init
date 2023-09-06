@@ -1,7 +1,12 @@
+{% if apt_repo == 'wheezy' %}
+deb http://archive.debian.org/debian/ wheezy main
+{% else %}
 deb {{ apt_mirror }} {{ apt_repo }} main
 deb {{ apt_mirror }} {{ apt_repo }}-updates main
+
 {% if apt_repo == 'bullseye' %}
 deb http://security.debian.org/ {{ apt_repo }}-security main
 {% else %}
 deb http://security.debian.org/ {{ apt_repo }}/updates main
+{% endif %}
 {% endif %}
