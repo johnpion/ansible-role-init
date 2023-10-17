@@ -101,6 +101,7 @@
 - name: Install software
   ansible.builtin.apt:
     pkg:
+      - bridge-utils
       - rsync
       - sudo
       - tmux
