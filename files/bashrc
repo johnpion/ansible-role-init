@@ -1,0 +1,20 @@
+#Generated with Ansible. Do not manually edit this file!
+#/root/.bashrc
+#File version 0.01
+#Commited by @johnpion
+
+export PS1="\[\e]0;\u@\H: \w\a\]${debian_chroot:+($debian_chroot)}\[\e[1;31m\]\u\[\e[1;33m\]@\[\e[1;36m\]\H \[\e[1;33m\]\w \[\e[1;35m\]\$ \[\e[0m\]"
+
+if [ -n "$TMUX" ]; then
+  return
+fi
+
+tmux new-session -A -s admin-session
+
+if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX" ]; then
+  if command -v tmux &>/dev/null; then
+    tmux attach || tmux admin-session
+  else
+    echo "tmux is not installed."
+  fi
+fi
