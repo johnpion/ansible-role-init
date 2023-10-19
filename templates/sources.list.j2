@@ -1,9 +1,13 @@
 {% if apt_repo == 'wheezy' %}
 deb http://archive.debian.org/debian/ wheezy main
 
+{% elif apt_repo == 'bookworm' %}
+deb {{ apt_mirror }} {{ apt_repo }} main non-free non-free-firmware
+deb {{ apt_mirror }} {{ apt_repo }}-updates main non-free-firmware
+
 {% else %}
-deb {{ apt_mirror }} {{ apt_repo }} main
-deb {{ apt_mirror }} {{ apt_repo }}-updates main
+deb {{ apt_mirror }} {{ apt_repo }} main non-free non-free-firmware
+deb {{ apt_mirror }} {{ apt_repo }}-updates main non-free-firmware
 
 {% if apt_repo in ['bookworm', 'bullseye'] %}
 deb http://security.debian.org/ {{ apt_repo }}-security main
