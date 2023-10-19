@@ -57,6 +57,10 @@
     state: absent
   when: '"pbs" in group_names'
 
+- name: Add soft for HP RAID
+  ansible.builtin.import_tasks: hp.yml
+  when: ansible_system_vendor == "HP"
+
 - name: Upgrade system
   ansible.builtin.apt:
     autoclean: true

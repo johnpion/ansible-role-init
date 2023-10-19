@@ -1,0 +1,17 @@
+- name: Add repo using key from URL
+  ansible.builtin.apt_key:
+    url: "{{ item }}"
+  with_items:
+    # - http://downloads.linux.hpe.com/SDR/hpPublicKey1024.pub
+    # - http://downloads.linux.hpe.com/SDR/hpPublicKey2048.pub
+    - http://downloads.linux.hpe.com/SDR/hpPublicKey2048_key1.pub
+    - http://downloads.linux.hpe.com/SDR/hpePublicKey2048_key1.pub
+
+- name: Add repo
+  ansible.builtin.apt_repository:
+    repo: "deb http://downloads.linux.hpe.com/SDR/repo/mcp {{ ansible_distribution_release }}/current non-free"
+
+- name: Install 'ssacli'
+  ansible.builtin.apt:
+    pkg: ssacli
+    update_cache: true
