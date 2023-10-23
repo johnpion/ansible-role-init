@@ -93,6 +93,7 @@
   ansible.builtin.apt:
     pkg:
       - bridge-utils
+      - parted
       - rsync
       - sudo
       - tmux
